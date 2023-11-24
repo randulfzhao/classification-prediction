@@ -10,9 +10,9 @@ import os
 import sys 
 
 user_name = 'user'
-save_npy_path = 'C:/Users/zhaor/Desktop/nturgb+d_skeletons/transferred'
+save_npy_path = 'C:/Users/zhaor/Desktop/code_work_2023/classification-detection/data/transferred/'
 load_txt_path = 'C:/Users/zhaor/Desktop/nturgb+d_skeletons/'
-missing_file_path = 'C:/Users/zhaor/Desktop/code_work_2023/data/NTURGB-D-master/Matlab/NTU_RGBD120_samples_with_missing_skeletons.txt'
+missing_file_path = 'C:/Users/zhaor/Desktop/code_work_2023/classification-detection/data/NTU_RGBD120_samples_with_missing_skeletons.txt'
 step_ranges = list(range(0,100)) # just parse range, for the purpose of paralle running. 
 
 
@@ -117,21 +117,25 @@ if __name__ == '__main__':
                        '({:>5}/{:<5})'.format(
                            ind + 1, len(datalist)
                        ))
-        S = int(each[1:4])
-        if S not in step_ranges:
-            continue 
-        if each+'.skeleton.npy' in alread_exist_dict:
-            print('file already existed !')
+        if each[1:4].isdigit():
+            S = int(each[1:4])
+            if S not in step_ranges:
+                continue 
+            if each+'.skeleton.npy' in alread_exist_dict:
+                print('file already existed !')
+                continue
+            if each[:20] in missing_files:
+                print('file missing')
+                continue 
+            loadname = load_txt_path+each
+            print(each)
+            mat = _read_skeleton(loadname)
+            mat = np.array(mat)
+            save_path = save_npy_path+'{}.npy'.format(each)
+            np.save(save_path, mat)            
+        else:
+            print(f"Skipping non-numeric file segment: {each[1:4]} in file {each}")
             continue
-        if each[:20] in missing_files:
-            print('file missing')
-            continue 
-        loadname = load_txt_path+each
-        print(each)
-        mat = _read_skeleton(loadname)
-        mat = np.array(mat)
-        save_path = save_npy_path+'{}.npy'.format(each)
-        np.save(save_path, mat)
         # raise ValueError()
     _end_toolbar()
     

@@ -117,7 +117,7 @@ if __name__ == '__main__':
                        '({:>5}/{:<5})'.format(
                            ind + 1, len(datalist)
                        ))
-        if each[1:4].isdigit():
+        try:
             S = int(each[1:4])
             if S not in step_ranges:
                 continue 
@@ -133,7 +133,7 @@ if __name__ == '__main__':
             mat = np.array(mat)
             save_path = save_npy_path+'{}.npy'.format(each)
             np.save(save_path, mat)            
-        else:
+        except:
             print(f"Skipping non-numeric file segment: {each[1:4]} in file {each}")
             continue
         # raise ValueError()
